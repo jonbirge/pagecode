@@ -17,7 +17,8 @@ for k = 1:n
   if k == 1  % no jitter yet
     idx = 1;
   else
-    idx = (k-1)*nk + 1 + round(randn()*jitt);  % starting index
+    % idx = (k-1)*nk + 1 + round(randn()*jitt);  % starting index
+    idx = idx + nk + round(jitt*randn());
   end
   s(idx:idx+nk-1) = double(s(idx:idx+nk-1) | krn*double(frm(k))) + randn(1, nk)/sqrt(nk)/snr;
 end

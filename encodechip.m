@@ -1,5 +1,6 @@
 function xvec = encodechip(x)
-%% xvec = encodechip(x)
+% xvec = encodechip(x)
+% where x is a two-bit unsigned integer
 
 switch x
   case 0
