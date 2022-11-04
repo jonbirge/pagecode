@@ -1,7 +1,7 @@
 %% Generate data
 
 clearvars
-nbytes = 8*1024;
+nbytes = 28*1024;
 data = uint8(randi(255, 1, nbytes));
 
 
@@ -9,7 +9,7 @@ data = uint8(randi(255, 1, nbytes));
 
 pixperbyte = 4*8/2;
 overheadpix = 5*pixperbyte;
-linepix = 5;  % pixels per barcode frame
+linepix = 2;  % pixels per barcode frame
 dpi = 150;
 win = 6;  % inches
 hin = 8;  % inches
@@ -38,4 +38,4 @@ for k = 1:nframes
   codim(linidx1:linidx2,1:length(frm)) = repmat(frm, linepix, 1);
 end
 
-imwrite(codim, 'testbar.tiff');
+imwrite(~codim, 'testbar.tiff');
