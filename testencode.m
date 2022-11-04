@@ -1,19 +1,20 @@
 %% Generate data
 
 clearvars
-nbytes = 8*1024;
-data = uint8(randi(255, 1, nbytes));
+nbytes = 5*1024;
+data = gentestbytes(nbytes);
 
 
 %% Parameters
 
 pixperbyte = 4*8/2;
 overheadpix = 5*pixperbyte;
-linepix = 5;  % pixels per barcode frame
-dpi = 150;
+linepix = 4;  % pixels per barcode frame
+dpi = 92;
 win = 6;  % inches
 hin = 8;  % inches
-pageframes = floor(dpi*hin/linepix);
+pagefram
+es = floor(dpi*hin/linepix);
 framebytes = floor((dpi*win - overheadpix)/pixperbyte);
 nframes = ceil(nbytes/framebytes);
 
@@ -38,4 +39,4 @@ for k = 1:nframes
   codim(linidx1:linidx2,1:length(frm)) = repmat(frm, linepix, 1);
 end
 
-imwrite(codim, 'testbar.tiff');
+imwrite(~codim, 'testbar.tiff');  % print high bits as black

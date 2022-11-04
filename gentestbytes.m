@@ -1,4 +1,4 @@
 function xs = gentestbytes(n)
 
-t = linspace(0, 8*pi, n);
-xs = uint8(255*(-cos(t)/2 + 0.5));
+t = 0:(n-1);
+xs = uint8(255*(-cos(2*pi*t/128)/2 + 0.5));
