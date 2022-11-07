@@ -6,26 +6,70 @@ imraw = imread('testscan.tif');
 
 %% measure & normalize
 
-% should check if image is binary, and if not, high-pass and quantize it
+% TODO: should check if image is binary, and if not, high-pass and quantize
+% the data to logical array
 
-% im = double(imraw) - 0.5;
+% get rid of trivial white-space
 [nh, nw] = size(imraw);
+rowsum = sum(~imraw, 2);
+improc = imraw(rowsum > 32, :);
 
-
-%%
-
-k0 = zeros(1, nh);
-for k = 1:nh
-  sline = double(~imraw(k, :));
-  if sum(sline) == 0
-    k0(k) = NaN;  % drop line
-  else
-    k0(k) = find(sline, 1);
-  end
+% find fiducial edges. this is not a robust algorithm.
+[nhp, ~] = size(improc);
+k0 = zeros(1, nhp);
+for k = 1:nhp
+  imline = ~improc(k,:);
+  k0(k) = find(imline,1);
 end
 
+% remove outliers beyond 10 pixels
 kmed = median(k0, 'omitnan');
 k0(abs(k0 - kmed) > 10) = NaN;
 
 figure(1)
 plot(k0)
+
+% fit line to edges, assuming square pixels
+lm = fitlm(1:nhp, k0);
+figure(2)
+plot(lm)
+slope = lm.Coefficients.Estimate(2);
+
+% square edges
+whitesp = ceil(min(predict(lm, (1:nhp).')));  % how lazy am i?
+imcrop = improc(1:end, whitesp:end);
+
+
+%% read lines
+
+% TODO: we either need to collapse
+% everything to a logical earlier, or figure out a way to handle
+% grey-scale. one option would be to pull out the preprocess code from
+% decode frame and put it here, and have that handle decide what's a line
+% and what's not.
+
+% TODO: read all similar lines into buffer and vote.
+
+% read lines, assuming imraw is logical
+[nhc, ~] = size(imcrop);
+rawdata = {};
+dataline = 1;
+for k = 1:nhc
+  if mod(k, 100) == 0
+    fprintf('k: %d\n', k)
+  end
+  if ~isnan(k0(k))
+    imline = ~imcrop(k,:);
+    %figure(3)
+    %stem(imline(1:256))
+    [xs, nsamp] = decodeframe(imline);
+    rawdata{dataline} = xs; %#ok<SAGROW>
+    dataline = dataline + 1;
+  end
+end
+
+
+%% concat data stream
+
+
+

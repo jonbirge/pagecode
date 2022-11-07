@@ -18,7 +18,7 @@ end
 [~, kmin] = min(zs, [], 'all', 'linear');
 p = params{kmin};
 startk = nchip*2*3*p(2) - p(1) + 1;
-sout = sin(startk:end);  % signal with fiducials removed
+sout = sin(startk:end);  % FIX: signal with fiducials removed
 nsamp = p(2);  % spatial samples per symbol
 
 sout = sout - mean(sout);  % should eventually use a high-pass filter to remove DC term
