@@ -1,7 +1,8 @@
 %% read file
 
 clearvars
-imraw = imread('testscan.tif');
+%imraw = imread('testscan.tif');
+imraw = imread('testbar.tif');
 
 
 %% measure & normalize
