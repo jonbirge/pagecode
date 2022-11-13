@@ -1,14 +1,15 @@
 %% read file
 
 clearvars
-%imraw = imread('testscan.tif');
-imraw = imread('testbar.tif');
+imraw = imread('testscan.tif');
 
 
 %% measure & normalize
 
+% TODO: rewrite using final functions. until then, forget about this file.
+
 % TODO: should check if image is binary, and if not, high-pass and quantize
-% the data to logical array
+% the data to logical array.
 
 % get rid of trivial white-space
 [nh, nw] = size(imraw);
@@ -61,16 +62,8 @@ for k = 1:nhc
   end
   if ~isnan(k0(k))
     imline = ~imcrop(k,:);
-    %figure(3)
-    %stem(imline(1:256))
     [xs, nsamp] = decodeframe(imline);
     rawdata{dataline} = xs; %#ok<SAGROW>
     dataline = dataline + 1;
   end
 end
-
-
-%% concat data stream
-
-
-

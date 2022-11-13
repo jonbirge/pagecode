@@ -10,9 +10,8 @@ xvec3 = [1 1 -1 -1];
 xvect1 = [1 1 1 1];
 xvect2 = [-1 -1 -1 -1];
 
-% construct decode matrix
-% build filled out code matrix including onerse sample buff in
-% the order: (1-left-shift; 1-no-shift; 1-right-shift; ...)
+% construct decode matrix including sample buffer in the order:
+% (1-left-shift; 1-no-shift; 1-right-shift; ...)
 dc = [xvec0; xvec1; xvec2; xvec3];
 [ncode, nchip] = size(dc);
 decmat = zeros(ncode + 1, nchip*nsamp+2);
