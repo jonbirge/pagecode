@@ -55,10 +55,13 @@ im = simpage(codim, printsnr, hbuf, wbuf);
 
 %% Simulate scan
 
+% TODO: simulate sampling the printed code with potential rotation, given a
+% sampling dpi. include potential clipping and rotation.
+
 imscan = logical(round(im));
 
-figure(1)
-imagesc(imscan)
+% figure(1)
+% imagesc(imscan)
 
 
 %% Read and normalize simulated scan
@@ -88,7 +91,7 @@ k0(abs(k0 - kmed) > 10) = NaN;
 
 % fit line to edges, assuming square pixels
 lm = fitlm(1:nhp, k0);
-figure(2)
+figure(1)
 plot(lm)
 slope = lm.Coefficients.Estimate(2);
 
@@ -97,7 +100,7 @@ whitesp = ceil(min(predict(lm, (1:nhp).')));  % how lazy am i?
 imcrop = improc(1:end, whitesp:end);
 
 % plot cropped result
-figure(3)
+figure(2)
 imagesc(imcrop)
 
 
@@ -114,6 +117,7 @@ imagesc(imcrop)
 % read lines, assuming 'imcrop' is logical
 [nhc, ~] = size(imcrop);
 rawdata = {};
+ids = [];
 dataline = 1;
 for k = 1:nhc
   if mod(k, 100) == 0
@@ -122,7 +126,31 @@ for k = 1:nhc
   if ~isnan(k0(k))
     imline = imcrop(k,:);
     [xs, nsamp] = decodeframe(imline);
-    rawdata{dataline} = xs; %#ok<SAGROW>
+    rawdata{dataline} = xs(2:end); %#ok<SAGROW>
+    ids(dataline) = xs(1); %#ok<SAGROW> 
     dataline = dataline + 1;
   end
 end
+
+
+%% Combine lines
+
+% for now, just take the first id, and make the assumption that all ids are
+% valid and that the only job is to take the first and move on. in the
+% future, a more robust id system could be developed, and all lines voted
+% with the same id would vote per chip.
+nids = length(ids);  % number of lines decoded
+xs = [];
+lastid = 0;
+kline = 1;
+for k = 1:nids
+  id = ids(k);
+  if id ~= lastid
+    xs = [xs, rawdata{kline}]; %#ok<AGROW>
+    lastid = id;
+    kline = kline + 1;
+  end
+end
+
+figure(3)
+plot(xs)
