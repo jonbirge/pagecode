@@ -22,22 +22,29 @@ nframes = ceil(nbytes/framebytes);
 
 %% Generate codes
 
-% header frame, will eventually have file name
+% TODO: put file name in header
+
+% header frame
 xhead = 42*ones(1, framebytes);
 headfrm = encodeframe(xhead, 0);
 framepix = length(headfrm);
 
-% all frames
+% TODO: have encodeframe take an optional parameter that is the upper limit
+% on line length, and return number of pixels used. build code iteratively.
+
+% data frames
 codim = false(linepix*(nframes + 1), framepix);
 codim(1:linepix,:) = repmat(headfrm, linepix, 1);
 for k = 1:nframes
   idx1 = (k-1)*framebytes + 1;
   idx2 = min(idx1 + framebytes - 1, nbytes);
   frmdat = data(idx1:idx2);
-  frm = logical(encodeframe(frmdat, k));
+  frm = encodeframe(frmdat, k);
   linidx1 = k*linepix + 1;
   linidx2 = linidx1 + linepix - 1;
   codim(linidx1:linidx2,1:length(frm)) = repmat(frm, linepix, 1);
+  %figure(3)
+  %imagesc(codim(1:32,1:end))
 end
 
 
@@ -139,6 +146,7 @@ end
 % valid and that the only job is to take the first and move on. in the
 % future, a more robust id system could be developed, and all lines voted
 % with the same id would vote per chip.
+
 nids = length(ids);  % number of lines decoded
 xs = [];
 lastid = 0;
@@ -146,9 +154,8 @@ kline = 1;
 for k = 1:nids
   id = ids(k);
   if id ~= lastid
-    xs = [xs, rawdata{kline}]; %#ok<AGROW>
+    xs = [xs, rawdata{k}]; %#ok<AGROW>
     lastid = id;
-    kline = kline + 1;
   end
 end
 
