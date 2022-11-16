@@ -1,4 +1,5 @@
-*.jpg
 matlab.mat
-*.png
+*.jpg
+*.tif
 *.tiff
+*.png
