@@ -19,33 +19,31 @@ codim = encodepage(data, codepar);
 %% Simulate print
 
 % print parameters
-printsnr = 4;
+printsnr = 10;
 pwin = 8.5;
 phin = 11;
 wbuf = (pwin - codepar.win)/codepar.win;
 hbuf = (phin - codepar.hin)/codepar.hin;
 im = simpage(codim, printsnr, hbuf, wbuf);
 
-% figure(1)
-% imagesc(im)
-
 
 %% Simulate scan
 
 % TODO: simulate sampling the printed code with potential rotation, given a
-% sampling dpi. include potential clipping and rotation.
+% sampling dpi. include potential clipping and rotation, and put noise
+% terms here, rather than in the print simulation.
 
 imscan = logical(round(im));
 
-% figure(2)
-% imagesc(imscan)
+figure(1)
+imagesc(imscan)
 
 
 %% Read and normalize simulated scan
 
 dataout = decodepage(imscan);
 
-figure(3)
+figure(2)
 plot(dataout)
 
 

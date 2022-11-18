@@ -1,7 +1,11 @@
-function [xs, nsamp] = decodeframe(sraw)
+function xs = decodeframe(sraw, nsamp)
 
 % determine "clock" and offset
-[s, nsamp] = preprocline(sraw);
+s = preprocline(sraw, nsamp);
+
+%%%%%%
+% figure(1)
+% plot(s(1:256))
 
 xvec0 = [-1 1 -1 1];
 xvec1 = [1 -1 1 -1];
@@ -10,8 +14,7 @@ xvec3 = [1 1 -1 -1];
 xvect1 = [1 1 1 1];
 xvect2 = [-1 -1 -1 -1];
 
-% construct decode matrix including sample buffer in the order:
-% (1-left-shift; 1-no-shift; 1-right-shift; ...)
+% construct decode matrix
 dc = [xvec0; xvec1; xvec2; xvec3];
 [ncode, nchip] = size(dc);
 decmat = zeros(ncode + 1, nchip*nsamp+2);
@@ -23,7 +26,7 @@ for k = 1:ncode
 end
 decmat(end+1:end+2,:) = [0 zoh(xvect1, nsamp) 0; 0 zoh(xvect2, nsamp) 0];
 
-% construct code matrix (what it all means)
+% construct code matrix
 % [code, sample offset]
 codmat = ...
   [0 -1; 1 -1; 2 -1; 3 -1; ...
@@ -31,12 +34,7 @@ codmat = ...
   0 1; 1 1; 2 1; 3 1;
   4 0; 5 0];
 
-% go through and pull out windows for decoding single chips. another
-% approach to try is convolving each code with the entire signal, and then
-% going back and figuring out each maximum likelihood detection afterwards.
-% not as easy, probably, but much more computationally efficient. no
-% premature optimization, though...
-% termsig = false;
+% decode chips
 ns = length(s);
 nchipest = floor(ns/nchip/nsamp);
 xchipraw = uint8(zeros(1, nchipest));  % 2-bit chip decode buffer
@@ -44,7 +42,7 @@ ks = 1;  % index into signal vector
 kx = 1;  % index into decoded chip vector
 stride = nchip*nsamp + 1;
 while ((ks+stride) < ns)
-  schip = s(ks:(ks+stride));  % get signal with buffer
+  schip = s(ks:(ks+stride));  % get signal with buffer on either side
   dec = decmat*schip(:);
   [~, kmax] = max(dec);
   maxlik = codmat(kmax,:);
@@ -54,6 +52,7 @@ while ((ks+stride) < ns)
   kx = kx + 1;
 end
 
+% combine chips into bytes
 xchips = xchipraw(xchipraw < 4);
 xs = uint8(zeros(1, floor(length(xchips)/nchip)));  % should check if div by nchip
 for kd = 1:length(xs)
