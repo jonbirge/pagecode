@@ -11,4 +11,6 @@ switch x
     xvec = [0 0 1 1];
   case 3
     xvec = [1 1 0 0];
+  otherwise
+    error('encodechip: invalid input')
 end

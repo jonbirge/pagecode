@@ -12,33 +12,31 @@ n = length(xints);
 bc = bytechips*chipsize;
 
 % convert
-bcodes = uint8(zeros(1, n*bc)); 
+bcodes = uint8(zeros(1, n*bc));
 for kb = 1:n
-  bits = int2bit(xints(kb));
-  bcode = zeros(bytechips, chipsize);
+  bcode = uint8(zeros(bytechips, chipsize));
+  cs = bytetochips(xints(kb));
   for k = 1:bytechips
-    idx = chipbit*(k-1)+1;
-    chipcode = bit2int(bits(idx:idx+chipbit-1), chipbit);  % int to encode
-    bcode(k, :) = encodechip(chipcode);
+    bcode(k,:) = encodechip(cs(k));
   end
   idx = bc*(kb-1)+1;
-  bcodes(idx:idx+bc-1) = uint8(reshape(bcode.', 1, bc));
+  bcodes(idx:idx+bc-1) = reshape(bcode.', 1, bc);
 end
 
 end
 
-function x = bit2int(b, nb)
-bstr = '';
-for k = 1:nb
-  bstr(k) = num2str(b(k));
-end
-x = bin2dec(bstr);
+
+function cs = bytetochips(b)
+% convert byte to array of chip integers. currently assumes 2-bit chips,
+% but this should be generalized in the future.
+
+chipbit = 2;
+bytechips = 4;
+tb = 0b11;
+cs = zeros(1, bytechips);
+for kc = 1:bytechips
+ cs(bytechips - kc + 1) = bitand(tb, b);
+ b = bitshift(b, -chipbit);
 end
 
-function b = int2bit(x)
-bstr = dec2bin(x, 8);
-b = zeros(1, 8);
-for k = 1:8
-  b(k) = str2double(bstr(k));
-end
 end
