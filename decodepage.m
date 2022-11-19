@@ -27,15 +27,22 @@ lm = fitlm(1:nhp, k0);
 whitesp = ceil(min(predict(lm, (1:nhp).')));  % how lazy am i?
 imcrop = improc(1:end, whitesp:end);
 
-% TODO: we either need to collapse
-% everything to a logical earlier, or figure out a way to handle
-% grey-scale. one option would be to pull out the preprocess code from
-% decode frame and put it here, and have that handle decide what's a line
-% and what's not.
+% determine sample rate from header lines
+nclock = 8;  % number of lines to average clock
+nsamps = zeros(1, nclock);
+for ks = 1:nclock
+  nsamps(ks) = clocksync(imcrop(1 + ks,:));
+end
+nsamp = median(nsamps);
+
+% TODO: we either need to collapse everything to a logical earlier, or
+% figure out a way to handle grey-scale. one option would be to pull out
+% the preprocess code from decode frame and put it here, and have that
+% handle decide what's a line and what's not.
 
 % TODO: read all similar lines into buffer and vote.
 
-% decode lines, assuming 'imcrop' is logical
+% decode lines, assuming 'imcrop' is logical/binary
 [nhc, ~] = size(imcrop);
 rawdata = {};
 ids = [];
@@ -45,8 +52,7 @@ for k = 1:nhc
     fprintf('k: %d\n', k)
   end
   if ~isnan(k0(k))
-    imline = imcrop(k,:);
-    [dataout, ~] = decodeframe(imline);
+    dataout = decodeframe(imcrop(k,:), nsamp);
     rawdata{dataline} = dataout(2:end); %#ok<AGROW>
     ids(dataline) = dataout(1); %#ok<AGROW> 
     dataline = dataline + 1;

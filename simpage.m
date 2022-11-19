@@ -6,7 +6,7 @@ function im = simpage(spage, linesnr, hbuf, wbuf)
 
 % parameters
 nk = 4;  % samples per symbol in both axes
-clip = randi(5);  % number of samples to clip on each end
+clip = randi(2) - 1;  % number of samples to clip on each end
 jitt = 0.1;
 
 % init

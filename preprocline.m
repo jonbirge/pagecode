@@ -1,26 +1,18 @@
-function [sout, nsamp] = preprocline(sin)
+function sout = preprocline(s, nsamp)
 %PREPROCLINE Preprocess single barcode line
+% Responsible for both taking out the DC term, as well as getting rid of
+% the clock sync part.
 
-% params
+% TODO: should eventually use a high-pass filter to remove DC term
+
+% code parameters
 nchip = 4;
+nsync = 3;
 
-zs = [];
-clips = 0:32;
-scales = 2:24;
-params = cell(length(clips), length(scales));
-for kc = 1:length(clips)
-  for ks = 1:length(scales)
-    zs(kc, ks) = scorescaling(scales(ks), clips(kc), sin); %#ok<AGROW> 
-    params{kc, ks} = [clips(kc) scales(ks)];
-  end
-end
-
-[~, kmin] = min(zs, [], 'all', 'linear');
-p = params{kmin};
-startk = nchip*2*3*p(2) - p(1) + 1;
-sout = sin(startk:end);  % FIX: signal with fiducials removed
-nsamp = p(2);  % spatial samples per symbol
-
-sout = sout - mean(sout);  % should eventually use a high-pass filter to remove DC term
+% shift and normalize
+smax = max(s);
+smin = min(s);
+skip = nsamp*nchip*nsync*2;
+sout = s((1+skip):end) - (smax - smin)/2;
 
 end
