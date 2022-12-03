@@ -20,11 +20,13 @@ kmed = median(k0, 'omitnan');
 k0(abs(k0 - kmed) > 10) = NaN;
 
 % fit line to edges, assuming square pixels
-lm = fitlm(1:nhp, k0);
+% lm = fitlm(1:nhp, k0);
 % slope = lm.Coefficients.Estimate(2);
+p = polyfit(1:nhp, k0, 1);
 
 % square edges
-whitesp = ceil(min(predict(lm, (1:nhp).')));  % how lazy am i?
+% whitesp = ceil(min(predict(lm, (1:nhp).')));
+whitesp = ceil(min(polyval(p, (1:nhp).')));
 imcrop = improc(1:end, whitesp:end);
 
 % determine sample rate from header lines
