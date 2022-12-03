@@ -14,7 +14,7 @@ overheadpix = 5*nchip;
 framebytes = floor((dpi*win - overheadpix)/pixperbyte);
 nframes = ceil(nbytes/framebytes);
 
-% TODO: put file name in header
+% TODO: put file name and file segment in header
 
 % header frame
 xhead = 42*ones(1, framebytes);
