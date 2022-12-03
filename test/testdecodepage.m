@@ -51,7 +51,7 @@ plot(dataout)
 
 nout = length(dataout);
 if nout ~= nbytes
-  fprintf('data lost!\n');
+  warning('data lost!');
 else
   errs = abs(dataout - data);
   nerrs = sum(errs > 0);

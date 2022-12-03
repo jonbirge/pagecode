@@ -21,9 +21,6 @@ xhead = 42*ones(1, framebytes);
 headfrm = encodeframe(xhead, 0);
 framepix = length(headfrm);
 
-% TODO: have encodeframe take an optional parameter that is the upper limit
-% on line length, and return number of pixels used. build code iteratively.
-
 % data frames
 codim = false(linepix*(nframes + 1), framepix);
 codim(1:linepix,:) = repmat(headfrm, linepix, 1);

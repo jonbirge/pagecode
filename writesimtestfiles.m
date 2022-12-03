@@ -2,17 +2,17 @@
 
 % test parameters
 clearvars
-nbytes = 32*1024;
+nbytes = 64*1024;
 data = uint8(gensawbytes(nbytes));
 
 % encode parameters
 codepar.dpi = 98;
-codepar.win = 6.5;  % inches
-codepar.hin = 9;  % inches
+codepar.win = 7.5;  % inches
+codepar.hin = 10;  % inches
 codepar.linepix = 2;  % pixels per barcode frame
 
 % print parameters
-printsnr = 10;
+printsnr = 100;  % linear scale
 pwin = 8.5;
 phin = 11;
 wbuf = (pwin - codepar.win)/codepar.win;
@@ -35,11 +35,11 @@ npages = ceil(nframes/pageframes);
 % actual even pagination
 pagebytes = ceil(nbytes/npages);
 
-for kpage = 1:npages
+parfor kpage = 1:npages
   % encode
   idx1 = (kpage - 1)*pagebytes + 1;
   idx2 = min(idx1 + pagebytes, nbytes);
-  pagedata = data(idx1:idx2);
+  pagedata = data(idx1:idx2); %#ok<PFBNS> 
   codim = encodepage(pagedata, codepar);
 
   % simulate print and scan

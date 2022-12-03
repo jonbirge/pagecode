@@ -5,7 +5,7 @@ function im = simpage(spage, linesnr, hbuf, wbuf)
 % spage, with relative margins expressed by hbuf and vbuf.
 
 % parameters
-nk = 4;  % samples per symbol in both axes
+nk = 5;  % samples per symbol in both axes
 clip = randi(2) - 1;  % number of samples to clip on each end
 jitt = 0.1;
 
