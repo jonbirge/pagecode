@@ -33,7 +33,7 @@ im = simpage(codim, printsnr, hbuf, wbuf);
 % sampling dpi. include potential clipping and rotation, and put noise
 % terms here, rather than in the print simulation.
 
-imscan = logical(round(im));
+imscan = logical(round(~im));
 
 figure(1)
 imagesc(imscan)

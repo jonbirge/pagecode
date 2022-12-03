@@ -7,8 +7,8 @@ data = uint8(gensawbytes(nbytes));
 
 % parameters
 codepar.dpi = 98;
-codepar.win = 7;  % inches
-codepar.hin = 10;  % inches
+codepar.win = 6.5;  % inches
+codepar.hin = 9;  % inches
 codepar.linepix = 2;  % pixels per barcode frame
 
 

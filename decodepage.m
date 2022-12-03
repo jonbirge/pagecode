@@ -2,10 +2,11 @@ function dataout = decodepage(imscan)
 
 % TODO: should check if image is binary, and if not, high-pass and quantize
 % the data to logical array.
+imraw = ~imscan;
 
 % get rid of trivial white-space
-rowsum = sum(imscan, 2);
-improc = imscan(rowsum > 32, :);
+rowsum = sum(imraw, 2);
+improc = imraw(rowsum > 32, :);
 
 % find fiducial edges. (this is not a robust algorithm.)
 [nhp, ~] = size(improc);
