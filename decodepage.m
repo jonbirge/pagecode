@@ -51,9 +51,9 @@ rawdata = {};
 ids = [];
 dataline = 1;
 for k = 1:nhc
-  if mod(k, 100) == 0
-    fprintf('k: %d\n', k)
-  end
+  %if mod(k, 100) == 0
+  %  fprintf('k: %d\n', k)
+  %end
   if ~isnan(k0(k))
     dataout = decodeframe(imcrop(k,:), nsamp);
     rawdata{dataline} = dataout(2:end); %#ok<AGROW>

@@ -2,6 +2,7 @@
 
 % test parameters
 clearvars
+filename = 'pagecodes.tif';
 nbytes = 32*1024;
 data = uint8(gensawbytes(nbytes));
 
@@ -13,9 +14,10 @@ codepar.linepix = 2;  % pixels per barcode frame
 
 
 %% save image files
+% TODO: factor into function to write single file
 
 % remove old
-delete('pagecode_*.tif')
+delete(filename)
 
 % dense pagination
 pixperbyte = 4*8/2;  % coding specific
@@ -28,9 +30,11 @@ npages = ceil(nframes/pageframes);
 % actual even pagination
 pagebytes = ceil(nbytes/npages);
 
+% TODO: write multipage TIFF
+% TODO: use parfor?
 for kpage = 1:npages
   idx1 = (kpage - 1)*pagebytes + 1;
-  idx2 = min(idx1 + pagebytes, nbytes);
+  idx2 = min(idx1 + pagebytes - 1, nbytes);
   pagedata = data(idx1:idx2);
   codim = encodepage(pagedata, codepar);
   filename = ['pagecode_' num2str(kpage)];

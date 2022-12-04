@@ -5,7 +5,7 @@ function im = simpage(spage, linesnr, hbuf, wbuf)
 % spage, with relative margins expressed by hbuf and vbuf.
 
 % parameters
-nk = 5;  % samples per symbol in both axes
+nk = 4;  % samples per symbol in both axes
 clip = randi(2) - 1;  % number of samples to clip on each end
 jitt = 0.1;
 
@@ -28,5 +28,5 @@ for k = 1:nh
   end
 end
 
-% add scan noise
+% TODO: add scan noise
 im = imraw;
