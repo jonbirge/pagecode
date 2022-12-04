@@ -19,7 +19,7 @@ wbuf = (pwin - codepar.win)/codepar.win;
 hbuf = (phin - codepar.hin)/codepar.hin;
 
 
-%% save image files
+%% save simulates scan image files
 
 % remove old
 delete('pagecode_*.tif')
