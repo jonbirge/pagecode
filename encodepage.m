@@ -1,4 +1,9 @@
-function codim = encodepage(data, codeparams)
+function codim = encodepage(data, codeparams, headerstr)
+
+% input handling
+if nargin < 3
+  headerstr = '--42--';
+end
 
 % parameters
 dpi = codeparams.dpi;
@@ -14,10 +19,8 @@ overheadpix = 5*nchip;
 framebytes = floor((dpi*win - overheadpix)/pixperbyte);
 nframes = ceil(nbytes/framebytes);
 
-% TODO: put file name and file segment in header
-
 % header frame
-xhead = 42*ones(1, framebytes);
+xhead = uint8(headerstr);
 headfrm = encodeframe(xhead, 0);
 framepix = length(headfrm);
 
