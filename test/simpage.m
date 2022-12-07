@@ -28,5 +28,5 @@ for k = 1:nh
   end
 end
 
-% add scan noise
+% TODO: add scan noise
 im = imraw;

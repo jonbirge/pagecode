@@ -33,7 +33,7 @@ im = simpage(codim, printsnr, hbuf, wbuf);
 % sampling dpi. include potential clipping and rotation, and put noise
 % terms here, rather than in the print simulation.
 
-imscan = logical(round(im));
+imscan = logical(round(~im));
 
 figure(1)
 imagesc(imscan)
@@ -51,7 +51,7 @@ plot(dataout)
 
 nout = length(dataout);
 if nout ~= nbytes
-  fprintf('data lost!\n');
+  warning('data lost!');
 else
   errs = abs(dataout - data);
   nerrs = sum(errs > 0);
