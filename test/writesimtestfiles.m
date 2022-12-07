@@ -2,8 +2,18 @@
 
 % test parameters
 clearvars
-nbytes = 128*1024;
-data = uint8(gensawbytes(nbytes));
+try
+  data = file2bytes('demo/testfile.jpg');
+  nbytes = length(data);
+  infilename = 'testfile.jpg';
+  disp('reading from demo file...')
+catch err
+  nbytes = 128*1024;
+  data = uint8(gensawbytes(nbytes));
+  infilename = 'test.dat';
+  delete('pagecode_*.tif')  % remove old
+  disp('using ramp signal...')
+end
 
 % encode parameters
 codepar.dpi = 98;
@@ -19,10 +29,7 @@ wbuf = (pwin - codepar.win)/codepar.win;
 hbuf = (phin - codepar.hin)/codepar.hin;
 
 
-%% save simulates scan image files
-
-% remove old
-delete('pagecode_*.tif')
+%% save simulated scan image files
 
 % dense pagination
 pixperbyte = 4*8/2;  % coding specific
@@ -35,12 +42,13 @@ npages = ceil(nframes/pageframes);
 % actual even pagination
 pagebytes = ceil(nbytes/npages);
 
+disp('encoding pages in parallel...')
 parfor kpage = 1:npages
   % encode
   idx1 = (kpage - 1)*pagebytes + 1;
   idx2 = min(idx1 + pagebytes - 1, nbytes);
   pagedata = data(idx1:idx2); %#ok<PFBNS> 
-  codim = encodepage(pagedata, codepar);
+  codim = encodepage(pagedata, codepar, [infilename '#' num2str(kpage)]);
 
   % simulate print and scan
   im = simpage(codim, printsnr, hbuf, wbuf);

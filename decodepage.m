@@ -1,4 +1,4 @@
-function dataout = decodepage(imscan)
+function [dataout, filename, seqid] = decodepage(imscan)
 
 % TODO: should check if image is binary, and if not, high-pass and quantize
 % the data to logical array.
@@ -21,12 +21,9 @@ kmed = median(k0, 'omitnan');
 k0(abs(k0 - kmed) > 10) = NaN;
 
 % fit line to edges, assuming square pixels
-% lm = fitlm(1:nhp, k0);
-% slope = lm.Coefficients.Estimate(2);
 p = polyfit(1:nhp, k0, 1);
 
 % square edges
-% whitesp = ceil(min(predict(lm, (1:nhp).')));
 whitesp = ceil(min(polyval(p, (1:nhp).')));
 imcrop = improc(1:end, whitesp:end);
 
@@ -66,9 +63,15 @@ end
 % valid and that the only job is to take the first and move on. in the
 % future, a more robust id system could be developed, and all lines voted
 % with the same id would vote per chip. eventually we should encode the
-% number of lines in the header, and use crc bytes on each line.
+% number of lines in the header, and use crc bytes on each line...
 
-% combine lines
+% extract header info
+headerstr = char(rawdata{3});  % conservatively assume the third line is correct
+A = regexp(headerstr, '(?<file>.*)#(?<id>\d+)', 'names');
+filename = A.file;
+seqid = A.id;
+
+% combine data lines
 nids = length(ids);  % number of lines decoded
 dataout = [];
 lastid = 0;
