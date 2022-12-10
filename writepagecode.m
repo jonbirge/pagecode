@@ -18,14 +18,15 @@ npages = ceil(nframes/pageframes);
 % even pagination
 pagebytes = ceil(nbytes/npages);
 
-% TODO: write multipage TIFF
-for kpage = 1:npages
+% write multipage TIFF
+for kpage = 2:npages
   idx1 = (kpage - 1)*pagebytes + 1;
   idx2 = min(idx1 + pagebytes - 1, nbytes);
   pagedata = data(idx1:idx2);
   codim = encodepage(pagedata, codepar, [filename '#' num2str(kpage)]);
-  thisfilename = [outfile '_' num2str(kpage) '.tif'];
-  imwrite(~codim, thisfilename);
+  thisfilename = [outfile '.tif'];
+  imwrite(~codim, thisfilename, "WriteMode", "append");
+  fprintf('page %d of %d\n', kpage, npages)
 end
 
 end
