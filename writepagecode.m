@@ -3,7 +3,7 @@ function writepagecode(data, codepar, outfile, filename)
 
 % input handling
 if nargin < 4
-  filename = 'pagecode.dat';
+  filename = 'pagecode.out';
 end
 
 % initial dense pagination

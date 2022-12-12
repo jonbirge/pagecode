@@ -19,12 +19,16 @@ end
 % remove outliers beyond 10 pixels
 kmed = median(k0, 'omitnan');
 k0(abs(k0 - kmed) > 10) = NaN;
+knans = isnan(k0);
+xs = 1:nhp;
+k0(knans) = [];
+xs(knans) = [];
 
 % fit line to edges, assuming square pixels
-p = polyfit(1:nhp, k0, 1);
+p = polyfit(xs, k0, 1);
 
 % square edges
-whitesp = ceil(min(polyval(p, (1:nhp).')));
+whitesp = ceil(min(polyval(p, (xs).')));
 imcrop = improc(1:end, whitesp:end);
 
 % determine sample rate from header lines

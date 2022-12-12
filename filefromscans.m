@@ -2,16 +2,17 @@ function filefromscans(fileprefix)
 
 % input handling
 if nargin < 1
-  fileprefix = 'pagecode';
+  fileprefix = '[Untitled]';
 end
 
-ds = dir([fileprefix '_*.tif']);
+ds = dir([fileprefix '*.tif']);
 nf = length(ds);
 
 % read and decode files
 datapages = cell(nf, 1);
 pagebytes = zeros(nf, 1);
 for kf = 1:nf
+  fprintf('reading page %d...\n', kf)
   imscan = imread(ds(kf).name);
   [datapage, filename, ~] = decodepage(imscan);
   datapages{kf} = datapage;
