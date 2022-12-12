@@ -19,13 +19,19 @@ npages = ceil(nframes/pageframes);
 pagebytes = ceil(nbytes/npages);
 
 % write multipage TIFF
+outfilename = [outfile '.tif'];
+try
+  delete(outfilename);
+  fprintf('deleting existing file...\n')
+catch 
+  fprintf('creating new file...\n')
+end
 for kpage = 2:npages
   idx1 = (kpage - 1)*pagebytes + 1;
   idx2 = min(idx1 + pagebytes - 1, nbytes);
   pagedata = data(idx1:idx2);
   codim = encodepage(pagedata, codepar, [filename '#' num2str(kpage)]);
-  thisfilename = [outfile '.tif'];
-  imwrite(~codim, thisfilename, "WriteMode", "append");
+  imwrite(~codim, outfilename, "WriteMode", "append");
   fprintf('page %d of %d\n', kpage, npages)
 end
 
